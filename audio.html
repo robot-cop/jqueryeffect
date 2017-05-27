@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<title>无标题文档</title>
+		<script>
+			(function(doc, win) {
+				var docEl = doc.documentElement,
+					recalc = function() {
+						var clientWidth = docEl.clientWidth;
+						if(!clientWidth) {
+							return
+						}
+						var w = 20 * (clientWidth / 375);
+						if(w > 40) {
+							w = 40
+						}
+						docEl.style.fontSize = w + "px"
+					};
+				if(!doc.addEventListener) {
+					return
+				}
+				if("orientationchange" in window) {
+					win.addEventListener("orientationchange", recalc, false)
+				}
+				win.addEventListener("resize", recalc, false);
+				win.addEventListener("load", recalc, false);
+				doc.addEventListener("DOMContentLoaded", recalc, false);
+				recalc()
+			})(document, window);
+		</script>
+		<style type="text/css">
+			.musicof {
+				position: absolute;
+				z-index: 3;
+				right: 0.5rem;
+				top: 0.5rem;
+				width: 1.3rem;
+				height: 1.3rem;
+				background: url(../../images/home/music_on.png) no-repeat center center;
+				background-size: contain;
+				-webkit-animation: rotatePlay 3s infinite cubic-bezier(0, 0, 1, 1);
+				background-color: greenyellow;
+			}
+			
+			.musicof-off {
+				background-image: url(../../images/home/music_off.png);
+				-webkit-animation: none;
+				background-color: pink;
+			}
+		</style>
+		<link href="../css/pages/style.css" rel="stylesheet" type="text/css">
+		<script src="https://img.dianzhangzhipin.com/source/js/jquery-2.1.1.min.js"></script>
+	</head>
+
+	<body>
+		<div class="musicof musicof-off"></div>
+		<script type="text/javascript">
+			var dzAudio = {
+				options: {},
+				audioData: {},
+				audioPlaying: null,
+				loadAudio: function() {
+					var audioData = this.audioData,
+						audio = document.createElement('audio'),
+						options = this.options;
+					audio.preload = "auto";
+					if(options.autoPlay) {
+						audio.oncanplay = function() {
+							audioData.music.play();
+						}
+					}
+					audio.onended = function() {
+						if(audio.loop) {
+							audio.play();
+						}
+					}
+					audio.onerror = function() {
+						alert("背景音乐加载错误!");
+					}
+					audio.onplay = function() {
+						this.audioPlaying = audio;
+						$(".musicof").removeClass("musicof-off");
+					}
+					audio.src = options.audioUrl + "?v=1";
+					audio.id = options.type;
+					audio.load();
+					audioData[options.type] = audio;
+				},
+				musicToggle: function() {
+					var music = this.audioData.music,
+						options = this.options;
+					$(options.musicContainer).bind("click", function(e) {
+						if($(this).hasClass(options.pauseClass)) {
+							music.loop = true;
+							music.play();
+							$(this).removeClass(options.pauseClass);
+						} else {
+							music.pause();
+							$(this).addClass(options.pauseClass);
+						}
+						e.preventDefault();
+					});
+				},
+				init: function(options) {
+					$.extend(true, this.options, options);
+					this.loadAudio();
+					this.musicToggle();
+				}
+			}
+			dzAudio.init({
+				audioUrl: "http://img.kanzhun.com/boss/activity/closestool/music.mp3",
+				type: "music",
+				autoPlay: true,
+				musicContainer: ".musicof",
+				pauseClass: "musicof-off"
+			});
+
+		</script>
+	</body>
+
+</html>
