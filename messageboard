@@ -1,0 +1,168 @@
+<html>
+
+	<head>
+		<title>HTML5手机视频弹幕文字评论代码</title>
+		<meta charset="UTF-8"><br />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+		<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.js"></script>
+
+		<style>
+			body {
+				background-color: pink;
+			}
+			
+			.d_show {
+				position: relative;
+				z-index: 2;
+				padding: 0 10px;
+				height: 14rem;
+				overflow: hidden;
+			}
+			
+			.d_show div {
+				font-size: 12px;
+				color: #fff;
+				line-height: 20px;
+				width: 100%;
+				height: 2rem;
+				overflow: hidden;
+				color: #fff;
+				background: rgba(1, 1, 1, .4);
+				border-radius: 5px;
+				box-sizing: border-box;
+				margin: 5px 0;
+				padding: 5px;
+			}
+			
+			.NYwishes {
+				width: 255px;
+				height: 300px;
+				position: fixed;
+				bottom: 0;
+				right: 0;
+				background: rgba(0, 0, 0, .6);
+			}
+			
+			.NYwishes h2 {
+				margin: 5px 0;
+				font-family: "微软雅黑";
+				font-size: 18px;
+				text-align: center;
+				color: #fff;
+			}
+			
+			.NYwishes .send {
+				position: absolute;
+				left: 0%;
+				bottom: 0px;
+				height: 40px;
+				width: 100%;
+				z-index: 99999;
+				padding-left: 5%;
+				display: flex;
+			}
+			
+			.NYwishes input {
+				font-size: 1em;
+				height: 30px;
+				line-height: 30px;
+				text-align: center;
+				box-sizing: border-box;
+				border: 1px solid #FE0002;
+				border-radius: 4px 0 0 4px;
+				width: 155px;
+			}
+			
+			.NYwishes a {
+				background-color: #FE0000;
+				color: #fff;
+				width: 80px;
+				height: 30px;
+				display: inline-block;
+				text-align: center;
+				line-height: 30px;
+				cursor: pointer;
+				border-radius: 0 4px 4px 0;
+			}
+			
+			.dz-hidden {
+				display: none;
+			}
+		</style>
+	</head>
+
+	<body style="padding:0px;margin:0px;">
+		<div class="NYwishes">
+			<h2>新年愿望墙</h2>
+			<div class="d_show">
+				<div>张三：幸福吉祥把你抱1</div>
+				<div>李四：一夜春风到2</div>
+				<div>新年花枝俏3</div>
+				<div>俏也不争春4</div>
+				<div>俏也不争春5</div>
+				<div>俏也不争春6</div>
+				<div>俏也不争春7</div>
+				<div>俏也不争春8</div>
+			</div>
+			<div class="send">
+				<input id="reply-write" name="content" type="text" value="" placeholder="说出你的愿望">
+				<a class="sendMessage">发送</a>
+			</div>
+		</div>
+		<script>
+			var dzMessages = {
+				count: 1,
+				sendReply: function() {
+					var self = this;
+					$(".sendMessage").on("click", function() {
+						var input = $("#reply-write"),
+							content = input.val();
+						input.val("");
+						if($.trim(content) == "") {
+							alert("请输入弹幕", 0)
+							return false;
+						}
+						content = "赵四： " + content;
+						$(".d_show >div").eq(self.count - 1).after($("<div>").text(content).hide());
+						console.log("发送方法：" + content);
+					})
+				},
+				repliesAnimate: function() {
+					var dom = $(".d_show >div"),
+						self = this;
+					dom.addClass("dz-hidden");
+					dom.eq(0).fadeIn(1000);
+
+					var timeInterval = setInterval(function() {
+						if(self.count > 5) {
+							$(".d_show >div").eq(0).hide(1000, function() {
+								$(this).appendTo($(".d_show"));
+								$(".d_show >div").eq(5).fadeIn(1000);
+							})
+						} else {
+							$(".d_show >div").eq(self.count).fadeIn(1000);
+							self.count++;
+						}
+					}, 2000);
+				},
+				inputEnter: function() {
+					var self = this;
+					$("#reply-write").keyup(function(ev) {
+						var ev = ev || event;
+						if(ev.keyCode == 13) {
+							self.sendReply();
+						}
+					});
+				},
+				init: function() {
+					this.inputEnter();
+					this.sendReply();
+					this.repliesAnimate();
+				}
+			}
+			dzMessages.init();
+		</script>
+
+	</body>
+
+</html>
