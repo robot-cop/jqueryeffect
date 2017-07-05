@@ -1,0 +1,26 @@
+$.fn.scrollEnd = function(callback, timeout) {          
+  $(this).scroll(function(){
+    var $this = $(this);
+    if ($this.data('scrollTimeout')) {
+      clearTimeout($this.data('scrollTimeout'));
+    }
+    $this.data('scrollTimeout', setTimeout(callback,timeout));
+  });
+};
+$(function(dz) {
+	var asideDom = $('.aside');
+	dz.aside = {
+		scrollPage: function() {
+			$(window).scrollEnd(function(){
+			   	asideDom.removeClass('logo-animate-back').addClass('logo-animate')
+			}, 500);
+			$(window).scroll(function(){
+			   	asideDom.addClass('logo-animate-back').removeClass('logo-animate')
+			 });
+		},
+		init: function() {
+			this.scrollPage();
+		}
+	}
+
+}(window.dz ? window.dz : window.dz = {}));
